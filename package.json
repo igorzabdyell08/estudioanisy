@@ -9,6 +9,14 @@
     "start": "next start"
   },
   "dependencies": {
+    "@radix-ui/react-alert-dialog": "latest",
+    "@radix-ui/react-avatar": "latest",
+    "@radix-ui/react-dialog": "latest",
+    "@radix-ui/react-label": "latest",
+    "@radix-ui/react-scroll-area": "latest",
+    "@radix-ui/react-select": "^2.0.0",
+    "@radix-ui/react-slot": "^1.0.2",
+    "@radix-ui/react-toast": "latest",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "immer": "latest",
