@@ -22,10 +22,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { toast } from "@/components/ui/use-toast"
+import { toast } from "sonner"
 
 export default function FinanceiroPage() {
   const [activeTab, setActiveTab] = useState("despesas")
+  // const { toast } = useToast()
 
   const {
     expenses,
@@ -48,28 +49,38 @@ export default function FinanceiroPage() {
   })
 
   const handleAddExpense = () => {
-    if (expenseForm.category && expenseForm.value && expenseForm.description) {
-      const newExpense = {
-        name: expenseForm.description,
-        category: expenseForm.category,
-        date: new Date(expenseForm.date).toLocaleDateString("pt-BR", {
-          day: "numeric",
-          month: "long",
-          year: "numeric",
-        }),
-        supplier: expenseForm.supplier ? `Fornecedor: ${expenseForm.supplier}` : "Fornecedor não informado",
-        value: Number.parseFloat(expenseForm.value),
-      }
-      addExpense(newExpense)
-      setExpenseForm({
-        category: "",
-        value: "",
-        date: "2025-07-18",
-        description: "",
-        supplier: "",
-        observations: "",
+    if (!expenseForm.category || !expenseForm.value || !expenseForm.description) {
+      toast({
+        title: "Campos obrigatórios",
+        description: "Preencha categoria, valor e descrição.",
+        variant: "destructive",
       })
+      return
     }
+
+    const newExpense = {
+      name: expenseForm.description,
+      category: expenseForm.category,
+      date: new Date(expenseForm.date).toLocaleDateString("pt-BR", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      }),
+      supplier: expenseForm.supplier ? `Fornecedor: ${expenseForm.supplier}` : "Fornecedor não informado",
+      value: Number.parseFloat(expenseForm.value.replace(",", ".")),
+    }
+
+    addExpense(newExpense)
+    setExpenseForm({
+      category: "",
+      value: "",
+      date: "2025-07-18",
+      description: "",
+      supplier: "",
+      observations: "",
+    })
+
+    toast.success("Despesa adicionada com sucesso!")
   }
 
   const stats = {
@@ -81,11 +92,7 @@ export default function FinanceiroPage() {
   const handleDeleteExpense = (id: number) => {
     const expense = expenses.find((exp) => exp.id === id)
     deleteExpense(id)
-    toast({
-      title: "Despesa excluída!",
-      description: `${expense?.name} foi removida definitivamente.`,
-      variant: "destructive",
-    })
+    toast.error(`${expense?.name} foi removida definitivamente.`)
   }
 
   const handleDeleteRevenue = (id: number) => {

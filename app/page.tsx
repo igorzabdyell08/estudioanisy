@@ -17,14 +17,13 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Calendar, ChevronLeft, ChevronRight, Users, TrendingUp, Clock, Plus, ArrowRight, Star } from "lucide-react"
 import { useState } from "react"
-import { useToast } from "@/hooks/use-toast"
+import { toast } from "sonner"
 import { cn } from "@/lib/utils"
 
 export default function Dashboard() {
   const [currentDate, setCurrentDate] = useState(new Date(2025, 5))
   const [isNewClientDialogOpen, setIsNewClientDialogOpen] = useState(false)
   const [isNewAppointmentDialogOpen, setIsNewAppointmentDialogOpen] = useState(false)
-  const { toast } = useToast()
 
   // Estados para formulários
   const [clientFormData, setClientFormData] = useState({
@@ -125,10 +124,7 @@ export default function Dashboard() {
       setClients([...clients, newClient])
       setClientFormData({ name: "", phone: "", birthDate: "", notes: "", rating: 5, referredBy: "" })
       setIsNewClientDialogOpen(false)
-      toast({
-        title: "Cliente cadastrado!",
-        description: `${clientFormData.name} foi adicionado com sucesso.`,
-      })
+      toast.success(`${clientFormData.name} foi adicionado com sucesso.`)
     }
   }
 
@@ -166,10 +162,7 @@ export default function Dashboard() {
         observations: "",
       })
       setIsNewAppointmentDialogOpen(false)
-      toast({
-        title: "Agendamento criado!",
-        description: `${appointmentFormData.service} agendado para ${appointmentFormData.client}.`,
-      })
+      toast.success(`${appointmentFormData.service} agendado para ${appointmentFormData.client}.`)
     }
   }
 

@@ -1,7 +1,7 @@
 "use client"
 
 import { create } from "zustand"
-import { persist } from "zustand/middleware"
+import { persist, createJSONStorage } from "zustand/middleware"
 
 interface Appointment {
   id: number
@@ -49,6 +49,7 @@ interface Client {
   } | null
   totalAppointments: number
   totalSpent: number
+  createdAt: string
 }
 
 interface Store {
@@ -72,7 +73,7 @@ interface Store {
   deleteRevenue: (id: number) => void
 
   // Clients - Adicionar estas funções
-  addClient: (client: Omit<Client, "id">) => void
+  addClient: (client: Omit<Client, "id" | "createdAt">) => void
   updateClient: (id: number, client: Partial<Client>) => void
   deleteClient: (id: number) => void
 
@@ -186,6 +187,7 @@ export const useStore = create<Store>()(
           nextAppointment: null,
           totalAppointments: 15,
           totalSpent: 1200,
+          createdAt: new Date().toISOString(),
         },
         {
           id: 2,
@@ -203,6 +205,7 @@ export const useStore = create<Store>()(
           },
           totalAppointments: 12,
           totalSpent: 960,
+          createdAt: new Date().toISOString(),
         },
         {
           id: 3,
@@ -216,6 +219,7 @@ export const useStore = create<Store>()(
           nextAppointment: null,
           totalAppointments: 0,
           totalSpent: 0,
+          createdAt: new Date().toISOString(),
         },
         {
           id: 4,
@@ -229,6 +233,7 @@ export const useStore = create<Store>()(
           nextAppointment: null,
           totalAppointments: 8,
           totalSpent: 640,
+          createdAt: new Date().toISOString(),
         },
       ],
 
@@ -317,7 +322,14 @@ export const useStore = create<Store>()(
 
       addClient: (client) =>
         set((state) => ({
-          clients: [...state.clients, { ...client, id: state.clients.length + 1 }],
+          clients: [
+            ...state.clients,
+            {
+              ...client,
+              id: Math.max(...state.clients.map((c) => c.id), 0) + 1,
+              createdAt: new Date().toISOString(),
+            },
+          ],
         })),
 
       updateClient: (id, updatedClient) =>
@@ -347,6 +359,7 @@ export const useStore = create<Store>()(
     }),
     {
       name: "agendamento-storage",
+      storage: createJSONStorage(() => localStorage),
     },
   ),
 )

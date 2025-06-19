@@ -9,6 +9,7 @@ import { Calendar, ChevronLeft, ChevronRight, User, Clock, X, Check, Trash2 } fr
 import { useState } from "react"
 import { useStore } from "@/lib/store"
 import { toast } from "sonner"
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -41,11 +42,7 @@ export default function AgendamentosPage() {
   const handleDeleteAppointment = (id: number) => {
     const appointment = appointments.find((apt) => apt.id === id)
     deleteAppointment(id)
-    toast({
-      title: "Agendamento excluído!",
-      description: `${appointment?.service} foi removido definitivamente.`,
-      variant: "destructive",
-    })
+    toast.error(`${appointment?.service} foi removido definitivamente.`)
   }
 
   const monthNames = [

@@ -31,7 +31,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ReminderTemplates } from "@/components/reminder-templates"
 import { WhatsAppButton } from "@/components/whatsapp-button"
 import { Badge } from "@/components/ui/badge"
-import { useToast } from "@/hooks/use-toast"
+import { toast } from "sonner"
 import { cn } from "@/lib/utils"
 import { useStore } from "@/lib/store"
 
@@ -41,7 +41,6 @@ export default function ClientesPage() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [isScheduleDialogOpen, setIsScheduleDialogOpen] = useState(false)
   const [selectedClient, setSelectedClient] = useState<any>(null)
-  const { toast } = useToast()
 
   // Usar o store global em vez do estado local
   const { clients, addClient, updateClient, deleteClient } = useStore()
@@ -105,10 +104,7 @@ export default function ClientesPage() {
       addClient(newClient)
       setFormData({ name: "", phone: "", birthDate: "", notes: "", rating: 5, referredBy: "" })
       setIsAddDialogOpen(false)
-      toast({
-        title: "Cliente cadastrado!",
-        description: `${formData.name} foi adicionado com sucesso.`,
-      })
+      toast.success(`${formData.name} foi adicionado com sucesso.`)
     }
   }
 
@@ -131,10 +127,7 @@ export default function ClientesPage() {
       setIsEditDialogOpen(false)
       setSelectedClient(null)
       setFormData({ name: "", phone: "", birthDate: "", notes: "", rating: 5, referredBy: "" })
-      toast({
-        title: "Cliente atualizado!",
-        description: "As informações foram salvas com sucesso.",
-      })
+      toast.success("As informações foram salvas com sucesso.")
     }
   }
 
@@ -147,11 +140,7 @@ export default function ClientesPage() {
     // Remove todos os agendamentos do cliente
     setExistingAppointments(existingAppointments.filter((apt) => apt.clientName !== client?.name))
 
-    toast({
-      title: "Cliente excluído!",
-      description: `${client?.name} e todos os seus agendamentos foram removidos definitivamente do sistema.`,
-      variant: "destructive",
-    })
+    toast.error(`${client?.name} e todos os seus agendamentos foram removidos definitivamente do sistema.`)
   }
 
   const handleScheduleClient = (client: any) => {
@@ -229,10 +218,7 @@ export default function ClientesPage() {
         observations: "",
       })
 
-      toast({
-        title: "Agendamento confirmado!",
-        description: `${selectedClient.name} foi agendado para ${newAppointment.date} às ${newAppointment.time}.`,
-      })
+      toast.success(`${selectedClient.name} foi agendado para ${newAppointment.date} às ${newAppointment.time}.`)
     }
   }
 
@@ -277,6 +263,7 @@ export default function ClientesPage() {
   }
 
   const calculateAge = (birthDate: string) => {
+    if (!birthDate) return null
     const today = new Date()
     const birth = new Date(birthDate)
     let age = today.getFullYear() - birth.getFullYear()
@@ -288,6 +275,7 @@ export default function ClientesPage() {
   }
 
   const isBirthday = (birthDate: string) => {
+    if (!birthDate) return false
     const today = new Date()
     const birth = new Date(birthDate)
     return today.getMonth() === birth.getMonth() && today.getDate() === birth.getDate()
